@@ -166,6 +166,16 @@
       color: var(--secondary);
     }
 
+    .hero-tagline {
+      font-size: clamp(0.875rem, 2vw, 1.05rem);
+      font-weight: 400;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0.75rem auto 0;
+      font-style: italic;
+    }
+
     .hero-divider {
       width: 56px;
       height: 2.5px;
@@ -917,6 +927,7 @@
     <div class="hero-content">
       <div class="factsheet-badge" id="heroBadge"></div>
       <h1 class="hero-event-name" id="heroName"></h1>
+      <p class="hero-tagline" id="heroTagline" style="display:none"></p>
       <div class="hero-divider"></div>
       <div class="hero-pills" id="heroPills"></div>
     </div>
@@ -1137,6 +1148,15 @@
     document.getElementById('heroName').innerHTML =
       (nameParts.join(' ') ? nameParts.join(' ') + '<br>' : '') +
       `<span>${lastWord}</span>`;
+
+    // Tagline
+    const taglineEl = document.getElementById('heroTagline');
+    if (h.tagline) {
+      taglineEl.textContent = h.tagline;
+      taglineEl.style.display = '';
+    } else {
+      taglineEl.style.display = 'none';
+    }
 
     // Pills
     const pills = [
