@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Factsheet | Vertex Mastery</title>
+  <link rel="icon" type="image/png" href="./favicon copy.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --primary:        #1a1a1a;
+      --secondary:      #7d6c58;
+      --secondary-dark: #5e5143;
+      --bg:             #f5f2ef;
+      --card-bg:        #ffffff;
+      --text:           #1a1a1a;
+      --text-muted:     #6b6560;
+      --border:         #e4ddd6;
+      --section-icon-bg: #f0ebe5;
+      --arrow-bg:       #f0ebe5;
+      --dropoff-bg:     #f5f2ef;
+      --dresscode-bg:   #f5f2ef;
+    }
+
+    [data-theme="dark"] {
+      --bg:             #1a1a1a;
+      --card-bg:        #252320;
+      --text:           #f0ebe5;
+      --text-muted:     #9e9086;
+      --border:         #3a342e;
+      --section-icon-bg: #2e2925;
+      --arrow-bg:       #2e2925;
+      --dropoff-bg:     #2e2925;
+      --dresscode-bg:   #2e2925;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    /* ── Loading Screen ── */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.4s ease;
+    }
+
+    #loading-screen.fade-out { opacity: 0; pointer-events: none; }
+
+    .loading-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--secondary);
+      animation: pulse 1.2s ease-in-out infinite;
+      margin: 0 4px;
+    }
+
+    .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes pulse {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* ── Theme Toggle ── */
+    .theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 999;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      cursor: pointer;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      background: rgba(0,0,0,0.35);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 1.5rem 3rem;
+      background-image: url('./Banner.png');
+      background-size: cover;
+      background-position: center center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(26, 26, 26, 0.55) 0%,
+        rgba(26, 26, 26, 0.65) 60%,
+        rgba(26, 26, 26, 0.80) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .factsheet-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.30);
+      color: #ffffff;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      padding: 0.45rem 1.4rem;
+      border-radius: 50px;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-event-name {
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-event-name span {
+      color: var(--secondary);
+    }
+
+    .hero-divider {
+      width: 56px;
+      height: 2.5px;
+      background: var(--secondary);
+      margin: 1.75rem auto;
+      border-radius: 2px;
+    }
+
+    .hero-pills {
+      display: flex;
+      gap: 0.65rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 0.25rem;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255,255,255,0.13);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: #ffffff;
+      padding: 0.45rem 1.1rem;
+      border-radius: 50px;
+      font-size: 0.83rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* ── Countdown ── */
+    .countdown-section {
+      background: var(--secondary);
+      padding: 2.75rem 1rem;
+      text-align: center;
+    }
+
+    .countdown-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 1.4rem;
+    }
+
+    .countdown-boxes {
+      display: flex;
+      gap: 0.875rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .countdown-box {
+      background: rgba(0,0,0,0.22);
+      border-radius: 14px;
+      padding: 1rem 1.4rem;
+      min-width: 80px;
+    }
+
+    .countdown-num {
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .countdown-unit {
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      margin-top: 0.35rem;
+    }
+
+    .countdown-ended {
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.5rem;
+    }
+
+    /* ── Main ── */
+    .main-content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 1rem 0.5rem;
+    }
+
+    /* ── Accordion Card ── */
+    .section-card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.07);
+      margin-bottom: 0.875rem;
+      overflow: hidden;
+      transition: box-shadow 0.3s;
+    }
+
+    [data-theme="dark"] .section-card {
+      box-shadow: 0 2px 14px rgba(0,0,0,0.35);
+    }
+
+    .section-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      padding: 1.25rem 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      color: var(--text);
+      transition: background 0.2s;
+    }
+
+    .section-header:hover {
+      background: rgba(125,108,88,0.05);
+    }
+
+    .section-icon-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--section-icon-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+
+    .section-title {
+      flex: 1;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .section-arrow {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--arrow-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      transition: transform 0.3s ease, background 0.3s, color 0.3s;
+    }
+
+    .section-header[aria-expanded="true"] .section-arrow {
+      transform: rotate(180deg);
+      background: var(--secondary);
+      color: #ffffff;
+    }
+
+    .section-header[aria-expanded="true"] .section-icon-wrap {
+      background: rgba(125,108,88,0.15);
+    }
+
+    .section-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+      border-top: 0px solid var(--border);
+    }
+
+    .section-body.open {
+      max-height: 3000px;
+      border-top: 1px solid var(--border);
+      transition: max-height 0.5s ease;
+    }
+
+    .section-inner {
+      padding: 1.5rem;
+    }
+
+    /* ── Detail Rows (Event Details) ── */
+    .detail-row {
+      display: grid;
+      grid-template-columns: 105px 1fr;
+      gap: 1rem;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .detail-row:first-child {
+      padding-top: 0;
+    }
+
+    .detail-label {
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--secondary);
+      padding-top: 0.15rem;
+    }
+
+    .detail-value {
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    .detail-value strong {
+      font-weight: 600;
+    }
+
+    .detail-value em {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .detail-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 0.2rem;
+    }
+
+    .map-btns {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.875rem;
+      flex-wrap: wrap;
+    }
+
+    .map-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.38rem 1rem;
+      border-radius: 50px;
+      border: 1.5px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .map-btn:hover {
+      border-color: var(--secondary);
+      background: rgba(125,108,88,0.08);
+      color: var(--secondary);
+    }
+
+    /* ── Venue Guide ── */
+    .vg-heading {
+      display: flex;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      border-left: 3.5px solid var(--secondary);
+      padding-left: 0.75rem;
+      margin-top: 1.75rem;
+      margin-bottom: 0.875rem;
+    }
+
+    .vg-heading:first-child { margin-top: 0; }
+
+    .vg-dropoff {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      padding-left: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .vg-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+
+    .parking-options-label {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .parking-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.875rem;
+    }
+
+    .pk-card {
+      background: var(--dropoff-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .pk-card-header {
+      padding: 1rem 1rem 0.75rem;
+    }
+
+    .pk-option-num {
+      font-size: 0.63rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .pk-name {
+      font-size: 0.975rem;
+      font-weight: 700;
+    }
+
+    .pk-inner {
+      border-top: 1px solid var(--border);
+      padding: 1rem;
+    }
+
+    .pk-section-label {
+      font-size: 0.63rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .pk-section-label:first-child { margin-top: 0; }
+
+    .pk-how-text {
+      font-size: 0.855rem;
+      line-height: 1.5;
+      margin-bottom: 0.5rem;
+    }
+
+    .pk-park-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 8px;
+      margin: 0.625rem 0;
+      display: block;
+    }
+
+    .pk-rate-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.835rem;
+    }
+
+    .pk-rate-row:last-of-type { border-bottom: none; }
+
+    .pk-rate-label {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: var(--text-muted);
+    }
+
+    .pk-rate-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--secondary);
+      flex-shrink: 0;
+    }
+
+    .pk-rate-val {
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .pk-video-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .pk-video-btn:hover {
+      border-color: var(--secondary);
+      background: rgba(125,108,88,0.06);
+    }
+
+    .vg-arrival-box {
+      background: rgba(125,108,88,0.08);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      font-size: 0.875rem;
+      line-height: 1.7;
+      margin-bottom: 0.5rem;
+    }
+
+    .vg-arrival-box strong {
+      font-weight: 600;
+    }
+
+    .vg-lobby-img {
+      width: 100%;
+      border-radius: 10px;
+      display: block;
+      margin-top: 0.5rem;
+    }
+
+    .pk-img-caption {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      margin-top: 0.35rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .vg-lobby-caption {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 560px) {
+      .parking-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── What to Prepare ── */
+    .prepare-heading {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--secondary);
+      margin-bottom: 0.75rem;
+    }
+
+    .items-list {
+      list-style: none;
+    }
+
+    .items-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    .items-list li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .items-list li:first-child {
+      padding-top: 0;
+    }
+
+    .item-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    .item-text {
+      flex: 1;
+    }
+
+    .item-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: 0.1rem;
+    }
+
+    .homework-list {
+      list-style: none;
+    }
+
+    .homework-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .homework-list li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .homework-list li:first-child {
+      padding-top: 0;
+    }
+
+    .hw-icon {
+      flex-shrink: 0;
+      font-size: 0.95rem;
+      margin-top: 0.1rem;
+    }
+
+    .dresscode-box {
+      background: var(--dresscode-bg);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.875rem;
+      font-size: 0.875rem;
+    }
+
+    .dresscode-icon {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    .dresscode-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* ── FAQ ── */
+    .faq-item {
+      padding: 1.1rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-item:first-child {
+      padding-top: 0;
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .faq-q {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+    }
+
+    .faq-q-label {
+      font-weight: 800;
+      color: var(--secondary);
+      flex-shrink: 0;
+      width: 1rem;
+    }
+
+    .faq-a {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.855rem;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+
+    .faq-a-label {
+      font-weight: 700;
+      flex-shrink: 0;
+      width: 1rem;
+    }
+
+    .faq-a strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ── CTA Buttons ── */
+    .cta-section {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 2rem 1rem 2.25rem;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.875rem 2.25rem;
+      border-radius: 50px;
+      border: 2px solid var(--secondary);
+      background: var(--secondary);
+      color: #ffffff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      min-width: 190px;
+      transition: background 0.22s, color 0.22s, border-color 0.22s, transform 0.15s;
+    }
+
+    .cta-btn:hover {
+      background: transparent;
+      color: var(--secondary);
+      transform: translateY(-1px);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: #1a1a1a;
+      color: #ffffff;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .footer-brand {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-copy {
+      font-size: 0.73rem;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.6;
+    }
+
+    /* ── Utility ── */
+    .mt-section { margin-top: 1.5rem; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .hero {
+        padding: 4.5rem 1.25rem 2.5rem;
+      }
+
+      .hero-event-name {
+        font-size: clamp(1.6rem, 8vw, 2.4rem);
+      }
+
+      .factsheet-badge {
+        margin-bottom: 2rem;
+      }
+
+      .countdown-num {
+        font-size: 2rem;
+      }
+
+      .countdown-box {
+        min-width: 66px;
+        padding: 0.75rem 1rem;
+      }
+
+      .countdown-boxes {
+        gap: 0.625rem;
+      }
+
+      .detail-row {
+        grid-template-columns: 85px 1fr;
+      }
+
+      .section-inner {
+        padding: 1.25rem;
+      }
+
+      .cta-btn {
+        min-width: 160px;
+        padding: 0.8rem 1.75rem;
+        font-size: 0.875rem;
+      }
+
+      .rate-list li {
+        flex-wrap: wrap;
+      }
+
+      .rate-val {
+        margin-left: 0;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .hero-pills {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading screen -->
+  <div id="loading-screen">
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+  </div>
+
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+
+  <!-- Hero -->
+  <header class="hero" id="hero">
+    <div class="hero-content">
+      <div class="factsheet-badge" id="heroBadge"></div>
+      <h1 class="hero-event-name" id="heroName"></h1>
+      <div class="hero-divider"></div>
+      <div class="hero-pills" id="heroPills"></div>
+    </div>
+  </header>
+
+  <!-- Countdown -->
+  <section class="countdown-section" aria-label="Countdown">
+    <div class="countdown-label">Counting Down to Event Day</div>
+    <div class="countdown-boxes" id="countdown">
+      <div class="countdown-box"><div class="countdown-num" id="cd-days">--</div><div class="countdown-unit">Days</div></div>
+      <div class="countdown-box"><div class="countdown-num" id="cd-hours">--</div><div class="countdown-unit">Hours</div></div>
+      <div class="countdown-box"><div class="countdown-num" id="cd-mins">--</div><div class="countdown-unit">Mins</div></div>
+      <div class="countdown-box"><div class="countdown-num" id="cd-secs">--</div><div class="countdown-unit">Secs</div></div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent"></main>
+
+  <!-- CTA -->
+  <div class="cta-section" id="ctaSection"></div>
+
+  <!-- Footer -->
+  <footer id="pageFooter"></footer>
+
+  <script>
+  // ─── Theme Toggle ───
+  const themeToggle = document.getElementById('themeToggle');
+  const html = document.documentElement;
+
+  themeToggle.addEventListener('click', () => {
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    themeToggle.textContent = isDark ? '🌙' : '☀️';
+  });
+
+  // ─── Accordion ───
+  function toggleSection(btn) {
+    const body = btn.nextElementSibling;
+    const isOpen = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!isOpen));
+    body.classList.toggle('open', !isOpen);
+  }
+
+  // ─── Countdown ───
+  let countdownTarget = null;
+  let countdownInterval = null;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function updateCountdown() {
+    if (!countdownTarget) return;
+    const diff = countdownTarget - new Date();
+    if (diff <= 0) {
+      document.getElementById('countdown').innerHTML = '<p class="countdown-ended">This event has started — we\'ll see you there!</p>';
+      clearInterval(countdownInterval);
+      return;
+    }
+    const total = Math.floor(diff / 1000);
+    document.getElementById('cd-days').textContent  = pad(Math.floor(total / 86400));
+    document.getElementById('cd-hours').textContent = pad(Math.floor((total % 86400) / 3600));
+    document.getElementById('cd-mins').textContent  = pad(Math.floor((total % 3600) / 60));
+    document.getElementById('cd-secs').textContent  = pad(total % 60);
+  }
+
+  // ─── Render helpers ───
+  function sectionCard(icon, title, bodyHtml) {
+    return `
+      <div class="section-card">
+        <button class="section-header" aria-expanded="false" onclick="toggleSection(this)">
+          <span class="section-icon-wrap" aria-hidden="true">${icon}</span>
+          <span class="section-title">${title}</span>
+          <span class="section-arrow" aria-hidden="true">▼</span>
+        </button>
+        <div class="section-body">
+          <div class="section-inner">${bodyHtml}</div>
+        </div>
+      </div>`;
+  }
+
+  function renderEventDetails(ed) {
+    const mapBtns = [
+      ed.googleMapsUrl ? `<a href="${ed.googleMapsUrl}" target="_blank" rel="noopener" class="map-btn">📍 Google Maps</a>` : '',
+      ed.wazeUrl       ? `<a href="${ed.wazeUrl}" target="_blank" rel="noopener" class="map-btn">🔵 Waze</a>` : '',
+    ].join('');
+
+    return `
+      <div class="detail-row">
+        <div class="detail-label">Venue</div>
+        <div class="detail-value">
+          <strong>${ed.venueName}</strong><br>${ed.venueAddress}
+          ${mapBtns ? `<div class="map-btns">${mapBtns}</div>` : ''}
+        </div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Date</div>
+        <div class="detail-value"><strong>${ed.displayDate}</strong><br><em>${ed.displayDay}</em></div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Time</div>
+        <div class="detail-value">
+          Registration Time: <strong>${ed.registrationTime}</strong><br>
+          Event Time: <strong>${ed.eventTime}</strong>
+          ${ed.endTimeNote ? `<div class="detail-note">${ed.endTimeNote}</div>` : ''}
+        </div>
+      </div>`;
+  }
+
+  function renderParkingCard(p, idx) {
+    const imgHtml = p.image
+      ? `<img src="${p.image}" alt="${p.name} Parking" class="pk-park-img">
+         ${p.imageCaption ? `<p class="pk-img-caption">${p.imageCaption}</p>` : ''}`
+      : '';
+
+    const ratesHtml = (p.rates || []).map(r => `
+      <div class="pk-rate-row">
+        <span class="pk-rate-label"><span class="pk-rate-dot"></span>${r.label}</span>
+        <span class="pk-rate-val">${r.value}</span>
+      </div>`).join('');
+
+    const videoHtml = p.videoUrl
+      ? `<a href="${p.videoUrl}" target="_blank" rel="noopener" class="pk-video-btn">▶ Directory Video</a>`
+      : '';
+
+    return `
+      <div class="pk-card">
+        <div class="pk-card-header">
+          <div class="pk-option-num">Option ${idx + 1}</div>
+          <div class="pk-name">${p.name}</div>
+        </div>
+        <div class="pk-inner">
+          <div class="pk-section-label">How to Park</div>
+          <p class="pk-how-text">${p.howToPark}</p>
+          ${imgHtml}
+          ${ratesHtml ? `<div class="pk-section-label">Rates</div>${ratesHtml}` : ''}
+          ${videoHtml}
+        </div>
+      </div>`;
+  }
+
+  function renderVenueGuide(vg) {
+    const parkingCards = (vg.parking || []).map((p, i) => renderParkingCard(p, i)).join('');
+    const gridCols = (vg.parking || []).length === 1 ? 'grid-template-columns:1fr;' : '';
+
+    const lobbyHtml = vg.lobbyImage ? `
+      <hr class="vg-divider">
+      <div class="vg-heading">Venue Lobby</div>
+      <img src="${vg.lobbyImage}" alt="Building Lobby" class="vg-lobby-img">
+      ${vg.lobbyCaption ? `<p class="vg-lobby-caption">${vg.lobbyCaption}</p>` : ''}` : '';
+
+    return `
+      <div class="vg-heading">If You Are Taking Grab</div>
+      <p class="vg-dropoff">Drop-off Point: <strong>${vg.grabDropoff}</strong></p>
+      <hr class="vg-divider">
+      <div class="vg-heading">If You Are Driving</div>
+      <div class="parking-options-label">Parking Options</div>
+      <div class="parking-grid" style="${gridCols}">${parkingCards}</div>
+      <hr class="vg-divider">
+      <div class="vg-heading">When You Arrive At The Venue</div>
+      <div class="vg-arrival-box">${vg.arrivalText}</div>
+      ${lobbyHtml}`;
+  }
+
+  function renderWhatToBring(items, dressCode) {
+    const bringItems = (items || []).map(i => `
+      <li>
+        <span class="item-icon">${i.icon}</span>
+        <span class="item-text">${i.text}${i.note ? `<span class="item-note">${i.note}</span>` : ''}</span>
+      </li>`).join('');
+
+    const dcHtml = dressCode ? `
+      <div class="prepare-heading mt-section">Dress Code</div>
+      <div class="dresscode-box">
+        <span class="dresscode-icon">${dressCode.icon}</span>
+        <div>
+          <strong>${dressCode.code}</strong>
+          ${dressCode.note ? `<div class="dresscode-note">${dressCode.note}</div>` : ''}
+        </div>
+      </div>` : '';
+
+    return `
+      <div class="prepare-heading">Items to Bring</div>
+      <ul class="items-list">${bringItems}</ul>
+      ${dcHtml}`;
+  }
+
+  function renderHomework(items) {
+    const hwItems = (items || []).map(i => {
+      const text = i.link ? `<a href="${i.link}" target="_blank" rel="noopener">${i.text}</a>` : i.text;
+      return `<li><span class="hw-icon">${i.icon}</span><span>${text}</span></li>`;
+    }).join('');
+    return `<ul class="homework-list">${hwItems}</ul>`;
+  }
+
+  function renderFaq(items) {
+    return (items || []).map(item => `
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-label">Q</span><span>${item.q}</span></div>
+        <div class="faq-a"><span class="faq-a-label">A</span><span>${item.a}</span></div>
+      </div>`).join('');
+  }
+
+  // ─── Main render ───
+  function render(c) {
+    const h = c.header || {};
+    const ed = c.eventDetails || {};
+    const vg = c.venueGuide || {};
+
+    // Page title
+    if (h.eventName) document.title = `${h.eventName} | Event Factsheet`;
+
+    // Hero
+    document.getElementById('heroBadge').textContent = h.badge || 'Event Factsheet';
+
+    // Event name: highlight last word in brown
+    const nameParts = (h.eventName || '').split(' ');
+    const lastWord = nameParts.pop();
+    document.getElementById('heroName').innerHTML =
+      (nameParts.join(' ') ? nameParts.join(' ') + '<br>' : '') +
+      `<span>${lastWord}</span>`;
+
+    // Pills
+    const pills = [
+      h.heroDate     ? `📅 ${h.heroDate}`     : '',
+      h.heroTime     ? `🕙 ${h.heroTime}`     : '',
+      h.heroLocation ? `📍 ${h.heroLocation}` : '',
+    ].filter(Boolean).map(p => `<div class="hero-pill">${p}</div>`).join('');
+    document.getElementById('heroPills').innerHTML = pills;
+
+    // Countdown
+    if (h.countdownTarget) {
+      countdownTarget = new Date(h.countdownTarget);
+      updateCountdown();
+      countdownInterval = setInterval(updateCountdown, 1000);
+    }
+
+    // Build sections
+    let sections = '';
+
+    sections += sectionCard('📋', 'Event Details', renderEventDetails(ed));
+    sections += sectionCard('🏢', 'Venue Guide', renderVenueGuide(vg));
+    sections += sectionCard('🎒', 'What to Prepare', renderWhatToBring(c.whatToBring, c.dressCode));
+
+    if ((c.homework || []).length > 0) {
+      sections += sectionCard('📚', 'Homework', renderHomework(c.homework));
+    }
+
+    if ((c.faq || []).length > 0) {
+      sections += sectionCard('❓', 'FAQ', renderFaq(c.faq));
+    }
+
+    document.getElementById('mainContent').innerHTML = sections;
+
+    // CTA
+    document.getElementById('ctaSection').innerHTML = c.contactUsUrl
+      ? `<a href="${c.contactUsUrl}" target="_blank" rel="noopener" class="cta-btn">📞 Contact Us</a>`
+      : '';
+
+    // Footer
+    const f = c.footer || {};
+    document.getElementById('pageFooter').innerHTML = `
+      <div class="footer-brand">${f.company || ''}</div>
+      <div class="footer-copy">${f.copyright || ''}</div>`;
+
+    // Hide loading
+    const ls = document.getElementById('loading-screen');
+    ls.classList.add('fade-out');
+    setTimeout(() => ls.remove(), 450);
+  }
+
+  // ─── Fetch config ───
+  fetch('./config.json')
+    .then(r => { if (!r.ok) throw new Error('Failed to load config'); return r.json(); })
+    .then(render)
+    .catch(err => {
+      console.error(err);
+      document.getElementById('loading-screen').innerHTML =
+        '<p style="color:#c0392b;font-size:0.9rem;padding:2rem;text-align:center;">Failed to load config.json. Check the file exists and is valid JSON.</p>';
+    });
+  </script>
+</body>
+</html>

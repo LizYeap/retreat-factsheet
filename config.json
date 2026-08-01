@@ -1,0 +1,86 @@
+{
+  "header": {
+    "badge": "Event Factsheet",
+    "eventName": "Founder Mastermind Retreat",
+    "tagline": "",
+    "heroDate": "3 – 4 Jul 2026 · Fri – Sat",
+    "heroTime": "10AM – 6PM",
+    "heroLocation": "Menara EcoWorld, KL",
+    "countdownTarget": "2026-07-03T10:00:00+08:00"
+  },
+  "eventDetails": {
+    "venueName": "Vertex Mastery Sdn Bhd",
+    "venueAddress": "39-07, Menara EcoWorld @ BBCC,<br>2, Jln Hang Tuah, Bukit Bintang,<br>55100 Kuala Lumpur",
+    "googleMapsUrl": "https://maps.app.goo.gl/WVbqtnF2PaW893FC7",
+    "wazeUrl": "https://ul.waze.com/ul?ll=3.13940800%2C101.70973100&navigate=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location",
+    "displayDate": "3 – 4 July 2026",
+    "displayDay": "Friday to Saturday",
+    "registrationTime": "9:30 AM",
+    "eventTime": "10:00 AM – 6:00 PM",
+    "endTimeNote": "End time may vary."
+  },
+  "venueGuide": {
+    "grabDropoff": "Menara EcoWorld",
+    "parking": [
+      {
+        "name": "Lalaport BBCC",
+        "howToPark": "Park at <strong>Zone C (Blue Zone)</strong>, Pillars <strong>C1 – C4</strong>",
+        "image": "https://category-king-factsheet.vercel.app/Lalaport%20Parking%20Picture.jpeg",
+        "imageCaption": "Park at Zone C (Blue Zone), pillars C1–C4",
+        "rates": [
+          { "label": "First 3 hours:", "value": "Free" },
+          { "label": "Subsequent hour:", "value": "RM 3" },
+          { "label": "After 5:00 PM:", "value": "Free" },
+          { "label": "Max per day:", "value": "RM 30" }
+        ],
+        "videoUrl": "https://drive.google.com/file/d/1qBIPrbqQzve_NeG4iKZavrkVCfLPh3DJ/view?usp=sharing"
+      },
+      {
+        "name": "The Labs @ BBCC",
+        "howToPark": "Park at <strong>B3</strong>, near <strong>Lift A</strong>",
+        "image": "",
+        "imageCaption": "",
+        "rates": [
+          { "label": "First hour:", "value": "RM 3" },
+          { "label": "Subsequent hour:", "value": "RM 2" },
+          { "label": "Max per day:", "value": "RM 40" }
+        ],
+        "videoUrl": "https://drive.google.com/file/d/1oMJFtL8d2HX7w0G1q9xJnEQnNaeUMid6/view?usp=sharing"
+      }
+    ],
+    "arrivalText": "Head to the reception counter to register. Mention to the security guards that you are going up to <strong>Level 39, Unit 07</strong>.",
+    "lobbyImage": "https://category-king-factsheet.vercel.app/Building%20Lobby%20Picture.jpg",
+    "lobbyCaption": "Head to the reception counter upon arrival"
+  },
+  "whatToBring": [
+    { "icon": "💧", "text": "Water Bottle with Lid", "note": "" },
+    { "icon": "📓", "text": "Notebook with Pen", "note": "" },
+    { "icon": "🔋", "text": "Power Bank or Charger", "note": "" },
+    { "icon": "🧥", "text": "Jacket", "note": "(Highly recommended! The room will be cold.)" }
+  ],
+  "homework": [],
+  "dressCode": {
+    "icon": "👔",
+    "code": "Smart Casual",
+    "note": "Bring a jacket along as the room will be cold."
+  },
+  "faq": [
+    {
+      "q": "Can I transfer my ticket to someone else?",
+      "a": "Yes. Tickets are non-refundable but transferable within the same company. Just inform us <strong>5 working days</strong> before the workshop so we can update your attendee information."
+    },
+    {
+      "q": "Is there any translation service?",
+      "a": "The workshop will be conducted entirely in English, and no translation will be provided."
+    },
+    {
+      "q": "Is the workshop HRDC Claimable?",
+      "a": "Yes. Founder Mastermind Retreat is HRD Corp claimable under the HRD Corp training schemes, subject to your company's eligibility and levy balance."
+    }
+  ],
+  "contactUsUrl": "https://api.whatsapp.com/send/?phone=601154581419&text&type=phone_number&app_absent=0",
+  "footer": {
+    "company": "Vertex Mastery Sdn Bhd",
+    "copyright": "Copyright 2026. All Rights Reserved, Vertex Mastery Sdn Bhd."
+  }
+}

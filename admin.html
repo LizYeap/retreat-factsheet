@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Admin — Factsheet Editor</title>
+  <link rel="icon" type="image/png" href="./favicon copy.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #7d6c58;
+      --accent-dark: #5e5143;
+      --bg: #f5f2ef;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --muted: #6b6560;
+      --border: #e4ddd6;
+      --danger: #c0392b;
+      --success: #27ae60;
+      --info: #2980b9;
+      --radius: 12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: #1a1a1a;
+      color: #fff;
+      padding: 0 1.5rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+
+    .topbar-title {
+      font-weight: 700;
+      font-size: 1rem;
+      flex: 1;
+    }
+
+    .topbar-title span { color: var(--accent); }
+
+    .topbar-actions { display: flex; gap: 0.5rem; align-items: center; }
+
+    .btn {
+      padding: 0.45rem 1.1rem;
+      border-radius: 8px;
+      border: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      color: #fff;
+    }
+
+    .btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: var(--accent-dark); }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 0.3rem 0.7rem;
+    }
+
+    .btn-add {
+      background: rgba(125,108,88,0.1);
+      color: var(--accent);
+      border: 1.5px dashed var(--accent);
+      font-size: 0.8rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      width: 100%;
+      justify-content: center;
+      margin-top: 0.75rem;
+    }
+
+    .btn-add:hover { background: rgba(125,108,88,0.18); }
+
+    #status {
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 0.3rem 0.75rem;
+      border-radius: 6px;
+      white-space: nowrap;
+      max-width: 280px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status-idle { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+    .status-ok   { background: rgba(39,174,96,0.22); color: #6ddc98; }
+    .status-err  { background: rgba(192,57,43,0.28); color: #f08080; }
+    .status-busy { background: rgba(41,128,185,0.22); color: #7ec8f8; }
+
+    /* ── GitHub Settings Panel ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 300;
+    }
+
+    .overlay.open { display: block; }
+
+    .settings-panel {
+      position: fixed;
+      top: 0;
+      right: -420px;
+      width: 420px;
+      height: 100vh;
+      background: var(--card);
+      z-index: 400;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+      box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+    }
+
+    .settings-panel.open { right: 0; }
+
+    .settings-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .settings-header h2 { font-size: 1rem; font-weight: 700; }
+
+    .settings-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    .settings-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .settings-footer .btn-primary { flex: 1; justify-content: center; font-size: 0.875rem; }
+
+    /* ── Formatting Guide ── */
+    .guide-panel {
+      max-width: 860px;
+      margin: 1.5rem auto 0;
+      padding: 0 1rem;
+    }
+
+    .guide-card {
+      background: #fffbf7;
+      border: 1.5px solid #e8ddd3;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .guide-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1.25rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+
+    .guide-toggle:hover { background: rgba(125,108,88,0.06); }
+
+    .guide-body {
+      display: none;
+      padding: 1.25rem;
+      border-top: 1px solid #e8ddd3;
+    }
+
+    .guide-body.open { display: block; }
+
+    .guide-tag { font-family: monospace; background: #f0ebe5; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.82rem; }
+
+    .guide-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.75rem; }
+    .guide-table th { text-align: left; padding: 0.5rem 0.75rem; background: #f0ebe5; font-weight: 600; }
+    .guide-table td { padding: 0.5rem 0.75rem; border-top: 1px solid #e8ddd3; vertical-align: top; }
+    .guide-table tr:hover td { background: #faf8f5; }
+
+    .guide-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.75rem;
+      line-height: 1.6;
+    }
+
+    /* ── Main Content ── */
+    .main-wrap {
+      max-width: 860px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* ── Section Cards ── */
+    .sec-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      overflow: hidden;
+    }
+
+    .sec-title {
+      padding: 1rem 1.5rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #faf8f6;
+    }
+
+    .sec-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    /* ── Form Controls ── */
+    .field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .field-row-3 { display: grid; grid-template-columns: 80px 1fr 1fr; gap: 1rem; }
+
+    label {
+      font-size: 0.73rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    input[type="text"],
+    input[type="url"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 0.6rem 0.875rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      background: #fff;
+      color: var(--text);
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="url"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+    }
+
+    textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+    textarea.sm { min-height: 50px; }
+
+    .html-hint {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 0.15rem;
+    }
+
+    /* ── Dynamic List Items ── */
+    .dyn-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .dyn-item {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      background: #faf8f6;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .dyn-item-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .dyn-item-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+
+    /* ── Parking Card ── */
+    .pk-admin-card {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: #faf8f6;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+
+    .pk-admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: #f0ebe5;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pk-admin-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent-dark);
+    }
+
+    .pk-admin-body {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+
+    .rates-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .rate-row-admin {
+      display: grid;
+      grid-template-columns: 1fr 1fr 28px;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .btn-rm-rate {
+      background: none;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      width: 28px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .btn-rm-rate:hover { border-color: var(--danger); color: var(--danger); }
+
+    .btn-add-rate {
+      font-size: 0.75rem;
+      padding: 0.3rem 0.7rem;
+      background: none;
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: border-color 0.2s, color 0.2s;
+      margin-top: 0.25rem;
+    }
+
+    .btn-add-rate:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Section Divider ── */
+    .sec-divider {
+      border: none;
+      border-top: 1px dashed var(--border);
+      margin: 0.25rem 0;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .field-row, .field-row-3 { grid-template-columns: 1fr; }
+      .topbar { padding: 0 0.75rem; }
+      .settings-panel { width: 100%; right: -100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Topbar ── -->
+<header class="topbar">
+  <div class="topbar-title">Factsheet <span>CMS</span></div>
+  <div class="topbar-actions">
+    <span id="status" class="status-idle">Ready</span>
+    <button class="btn btn-outline" onclick="openSettings()">⚙ GitHub</button>
+    <button class="btn btn-outline" onclick="loadFromGitHub()">↓ Load</button>
+    <button class="btn btn-primary" onclick="saveToGitHub()">↑ Save & Deploy</button>
+  </div>
+</header>
+
+<!-- ── Overlay ── -->
+<div class="overlay" id="overlay" onclick="closeSettings()"></div>
+
+<!-- ── GitHub Settings Panel ── -->
+<aside class="settings-panel" id="settingsPanel">
+  <div class="settings-header">
+    <h2>⚙ GitHub Settings</h2>
+    <button class="btn btn-outline" style="color:var(--text);border-color:var(--border);" onclick="closeSettings()">✕</button>
+  </div>
+  <div class="settings-body">
+    <p style="font-size:0.8rem;color:var(--muted);line-height:1.6;">These settings are saved in your browser only and never sent to any server other than GitHub.</p>
+
+    <div class="field">
+      <label>GitHub Personal Access Token</label>
+      <input type="text" id="s-token" placeholder="ghp_xxxxxxxxxxxx">
+      <span class="html-hint">Needs repo → contents read/write permission.</span>
+    </div>
+
+    <div class="field">
+      <label>Owner (GitHub username or org)</label>
+      <input type="text" id="s-owner" placeholder="your-username">
+    </div>
+
+    <div class="field">
+      <label>Repository name</label>
+      <input type="text" id="s-repo" placeholder="retreat-factsheet">
+    </div>
+
+    <div class="field">
+      <label>Branch</label>
+      <input type="text" id="s-branch" placeholder="main">
+    </div>
+
+    <div class="field">
+      <label>Config file path in repo</label>
+      <input type="text" id="s-path" placeholder="config.json">
+    </div>
+  </div>
+  <div class="settings-footer">
+    <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+  </div>
+</aside>
+
+<!-- ── HTML Formatting Guide ── -->
+<div class="guide-panel">
+  <div class="guide-card">
+    <button class="guide-toggle" onclick="toggleGuide(this)">
+      📋 HTML Formatting Guide — click to expand
+    </button>
+    <div class="guide-body" id="guideBody">
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:0.5rem;">Some fields (marked with <em>"Supports HTML"</em>) allow basic HTML tags to format text.</p>
+      <table class="guide-table">
+        <thead>
+          <tr><th>Tag</th><th>What it does</th><th>Example input</th><th>Result</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="guide-tag">&lt;strong&gt;</span></td>
+            <td>Bold text</td>
+            <td><code>Park at &lt;strong&gt;Zone C&lt;/strong&gt;</code></td>
+            <td>Park at <strong>Zone C</strong></td>
+          </tr>
+          <tr>
+            <td><span class="guide-tag">&lt;em&gt;</span></td>
+            <td>Italic text</td>
+            <td><code>End time &lt;em&gt;may vary&lt;/em&gt;</code></td>
+            <td>End time <em>may vary</em></td>
+          </tr>
+          <tr>
+            <td><span class="guide-tag">&lt;br&gt;</span></td>
+            <td>Line break</td>
+            <td><code>Line 1&lt;br&gt;Line 2</code></td>
+            <td>Line 1<br>Line 2</td>
+          </tr>
+          <tr>
+            <td><span class="guide-tag">&lt;a&gt;</span></td>
+            <td>Hyperlink</td>
+            <td><code>&lt;a href="https://..."&gt;Click here&lt;/a&gt;</code></td>
+            <td><a href="#" onclick="return false;" style="color:var(--accent)">Click here</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="guide-note">⚠ Only use these four tags. Anything else (e.g. &lt;script&gt;, &lt;img&gt;) will appear as raw text or may cause display issues. Fields that <em>don't</em> support HTML will show the tags as literal characters.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Content ── -->
+<main class="main-wrap">
+
+  <!-- 1. Event Header -->
+  <div class="sec-card">
+    <div class="sec-title">🎯 Event Header</div>
+    <div class="sec-body">
+      <div class="field-row">
+        <div class="field">
+          <label>Badge text</label>
+          <input type="text" id="h-badge" placeholder="Event Factsheet">
+        </div>
+        <div class="field">
+          <label>Event name</label>
+          <input type="text" id="h-eventName" placeholder="Founder Mastermind Retreat">
+        </div>
+      </div>
+      <div class="field">
+        <label>Tagline (optional)</label>
+        <input type="text" id="h-tagline" placeholder="Leave blank if not needed">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Hero date pill</label>
+          <input type="text" id="h-heroDate" placeholder="3 – 4 Jul 2026 · Fri – Sat">
+        </div>
+        <div class="field">
+          <label>Hero time pill</label>
+          <input type="text" id="h-heroTime" placeholder="10AM – 6PM">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Hero location pill</label>
+          <input type="text" id="h-heroLocation" placeholder="Menara EcoWorld, KL">
+        </div>
+        <div class="field">
+          <label>Countdown target (ISO 8601)</label>
+          <input type="text" id="h-countdownTarget" placeholder="2026-07-03T10:00:00+08:00">
+          <span class="html-hint">Format: YYYY-MM-DDTHH:MM:SS+HH:MM (timezone offset)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Event Details -->
+  <div class="sec-card">
+    <div class="sec-title">📋 Event Details</div>
+    <div class="sec-body">
+      <div class="field-row">
+        <div class="field">
+          <label>Venue / Company name</label>
+          <input type="text" id="ed-venueName" placeholder="Vertex Mastery Sdn Bhd">
+        </div>
+        <div class="field">
+          <label>Display date</label>
+          <input type="text" id="ed-displayDate" placeholder="3 – 4 July 2026">
+        </div>
+      </div>
+      <div class="field">
+        <label>Full address — Supports HTML</label>
+        <textarea id="ed-venueAddress" class="sm" placeholder="39-07, Menara EcoWorld @ BBCC,&lt;br&gt;2, Jln Hang Tuah..."></textarea>
+        <span class="html-hint">Use &lt;br&gt; for line breaks</span>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Google Maps URL</label>
+          <input type="url" id="ed-googleMapsUrl" placeholder="https://maps.app.goo.gl/...">
+        </div>
+        <div class="field">
+          <label>Waze URL</label>
+          <input type="url" id="ed-wazeUrl" placeholder="https://ul.waze.com/...">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Display day (e.g. Friday to Saturday)</label>
+          <input type="text" id="ed-displayDay" placeholder="Friday to Saturday">
+        </div>
+        <div class="field">
+          <label>Registration time</label>
+          <input type="text" id="ed-registrationTime" placeholder="9:30 AM">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Event time</label>
+          <input type="text" id="ed-eventTime" placeholder="10:00 AM – 6:00 PM">
+        </div>
+        <div class="field">
+          <label>End time note</label>
+          <input type="text" id="ed-endTimeNote" placeholder="End time may vary.">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Venue Guide -->
+  <div class="sec-card">
+    <div class="sec-title">🏢 Venue Guide</div>
+    <div class="sec-body">
+
+      <div class="field">
+        <label>Grab drop-off point</label>
+        <input type="text" id="vg-grabDropoff" placeholder="Menara EcoWorld">
+      </div>
+
+      <hr class="sec-divider">
+      <p style="font-size:0.82rem;font-weight:600;color:var(--muted);">Parking Options</p>
+
+      <div id="parkingList" class="dyn-list"></div>
+      <button class="btn btn-add" onclick="addParking()">＋ Add Parking Option</button>
+
+      <hr class="sec-divider">
+
+      <div class="field">
+        <label>Arrival instructions — Supports HTML</label>
+        <textarea id="vg-arrivalText" placeholder="Head to the reception counter..."></textarea>
+        <span class="html-hint">Use &lt;strong&gt; to highlight key info like floor numbers</span>
+      </div>
+
+      <hr class="sec-divider">
+
+      <div class="field-row">
+        <div class="field">
+          <label>Lobby image URL</label>
+          <input type="url" id="vg-lobbyImage" placeholder="https://...">
+        </div>
+        <div class="field">
+          <label>Lobby image caption</label>
+          <input type="text" id="vg-lobbyCaption" placeholder="Head to the reception counter upon arrival">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. What to Bring -->
+  <div class="sec-card">
+    <div class="sec-title">🎒 What to Bring</div>
+    <div class="sec-body">
+      <div id="bringList" class="dyn-list"></div>
+      <button class="btn btn-add" onclick="addBring()">＋ Add Item</button>
+    </div>
+  </div>
+
+  <!-- 5. Homework / Pre-event Tasks -->
+  <div class="sec-card">
+    <div class="sec-title">📚 Homework / Pre-event Tasks</div>
+    <div class="sec-body">
+      <p style="font-size:0.8rem;color:var(--muted);">Leave empty to hide this section on the factsheet.</p>
+      <div id="homeworkList" class="dyn-list"></div>
+      <button class="btn btn-add" onclick="addHomework()">＋ Add Task</button>
+    </div>
+  </div>
+
+  <!-- 6. Dress Code -->
+  <div class="sec-card">
+    <div class="sec-title">👔 Dress Code</div>
+    <div class="sec-body">
+      <div class="field-row-3">
+        <div class="field">
+          <label>Icon (emoji)</label>
+          <input type="text" id="dc-icon" placeholder="👔">
+        </div>
+        <div class="field">
+          <label>Dress code</label>
+          <input type="text" id="dc-code" placeholder="Smart Casual">
+        </div>
+        <div class="field">
+          <label>Note</label>
+          <input type="text" id="dc-note" placeholder="Bring a jacket...">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. FAQ -->
+  <div class="sec-card">
+    <div class="sec-title">❓ FAQ</div>
+    <div class="sec-body">
+      <div id="faqList" class="dyn-list"></div>
+      <button class="btn btn-add" onclick="addFaq()">＋ Add FAQ Item</button>
+    </div>
+  </div>
+
+  <!-- 8. Links & Footer -->
+  <div class="sec-card">
+    <div class="sec-title">🔗 Links &amp; Footer</div>
+    <div class="sec-body">
+      <div class="field">
+        <label>Contact Us button URL (WhatsApp / link)</label>
+        <input type="url" id="lf-contactUsUrl" placeholder="https://api.whatsapp.com/...">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Footer company name</label>
+          <input type="text" id="lf-company" placeholder="Vertex Mastery Sdn Bhd">
+        </div>
+        <div class="field">
+          <label>Footer copyright text</label>
+          <input type="text" id="lf-copyright" placeholder="Copyright 2026. All Rights Reserved...">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom save button -->
+  <button class="btn btn-primary" onclick="saveToGitHub()" style="font-size:0.95rem;padding:0.8rem 2rem;justify-content:center;border-radius:10px;">
+    ↑ Save &amp; Deploy to Vercel
+  </button>
+
+</main>
+
+<script>
+// ── Settings ──
+const KEYS = { token:'cms_gh_token', owner:'cms_gh_owner', repo:'cms_gh_repo', branch:'cms_gh_branch', path:'cms_gh_path' };
+
+function loadSettings() {
+  document.getElementById('s-token').value  = localStorage.getItem(KEYS.token)  || '';
+  document.getElementById('s-owner').value  = localStorage.getItem(KEYS.owner)  || '';
+  document.getElementById('s-repo').value   = localStorage.getItem(KEYS.repo)   || '';
+  document.getElementById('s-branch').value = localStorage.getItem(KEYS.branch) || 'main';
+  document.getElementById('s-path').value   = localStorage.getItem(KEYS.path)   || 'config.json';
+}
+
+function saveSettings() {
+  localStorage.setItem(KEYS.token,  document.getElementById('s-token').value.trim());
+  localStorage.setItem(KEYS.owner,  document.getElementById('s-owner').value.trim());
+  localStorage.setItem(KEYS.repo,   document.getElementById('s-repo').value.trim());
+  localStorage.setItem(KEYS.branch, document.getElementById('s-branch').value.trim() || 'main');
+  localStorage.setItem(KEYS.path,   document.getElementById('s-path').value.trim()   || 'config.json');
+  closeSettings();
+  setStatus('Settings saved.', 'ok');
+}
+
+function getSettings() {
+  return {
+    token:  localStorage.getItem(KEYS.token)  || '',
+    owner:  localStorage.getItem(KEYS.owner)  || '',
+    repo:   localStorage.getItem(KEYS.repo)   || '',
+    branch: localStorage.getItem(KEYS.branch) || 'main',
+    path:   localStorage.getItem(KEYS.path)   || 'config.json',
+  };
+}
+
+function openSettings()  { document.getElementById('settingsPanel').classList.add('open'); document.getElementById('overlay').classList.add('open'); }
+function closeSettings() { document.getElementById('settingsPanel').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+
+// ── Status ──
+function setStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status-' + type;
+}
+
+// ── Formatting Guide ──
+function toggleGuide(btn) {
+  document.getElementById('guideBody').classList.toggle('open');
+}
+
+// ── GitHub API ──
+async function loadFromGitHub() {
+  const s = getSettings();
+  if (!s.token || !s.owner || !s.repo) {
+    setStatus('⚠ Set GitHub settings first.', 'err'); openSettings(); return;
+  }
+  setStatus('Loading…', 'busy');
+  try {
+    const url = `https://api.github.com/repos/${s.owner}/${s.repo}/contents/${s.path}?ref=${s.branch}`;
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${s.token}`, Accept: 'application/vnd.github.v3+json' } });
+    if (!res.ok) throw new Error(`GitHub API ${res.status}: ${res.statusText}`);
+    const data = await res.json();
+    const json = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+    populateForm(json);
+    setStatus('✓ Loaded from GitHub', 'ok');
+  } catch (e) {
+    setStatus('✗ ' + e.message, 'err');
+    console.error(e);
+  }
+}
+
+async function saveToGitHub() {
+  const s = getSettings();
+  if (!s.token || !s.owner || !s.repo) {
+    setStatus('⚠ Set GitHub settings first.', 'err'); openSettings(); return;
+  }
+  setStatus('Saving…', 'busy');
+  try {
+    const config = buildConfig();
+    const content = unescape(encodeURIComponent(JSON.stringify(config, null, 2)));
+    const b64 = btoa(content);
+
+    const url = `https://api.github.com/repos/${s.owner}/${s.repo}/contents/${s.path}`;
+    const headers = { Authorization: `Bearer ${s.token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' };
+
+    // Get current SHA (needed for update)
+    let sha = null;
+    const getRes = await fetch(`${url}?ref=${s.branch}`, { headers });
+    if (getRes.ok) { const d = await getRes.json(); sha = d.sha; }
+
+    const body = { message: 'CMS update: ' + new Date().toISOString(), content: b64, branch: s.branch };
+    if (sha) body.sha = sha;
+
+    const putRes = await fetch(url, { method: 'PUT', headers, body: JSON.stringify(body) });
+    if (!putRes.ok) { const err = await putRes.json(); throw new Error(err.message || `HTTP ${putRes.status}`); }
+
+    setStatus('✓ Saved! Vercel redeploying…', 'ok');
+  } catch (e) {
+    setStatus('✗ ' + e.message, 'err');
+    console.error(e);
+  }
+}
+
+// ── Populate Form from Config ──
+function populateForm(c) {
+  const v = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+
+  // Header
+  if (c.header) {
+    v('h-badge',           c.header.badge);
+    v('h-eventName',       c.header.eventName);
+    v('h-tagline',         c.header.tagline);
+    v('h-heroDate',        c.header.heroDate);
+    v('h-heroTime',        c.header.heroTime);
+    v('h-heroLocation',    c.header.heroLocation);
+    v('h-countdownTarget', c.header.countdownTarget);
+  }
+
+  // Event Details
+  if (c.eventDetails) {
+    v('ed-venueName',        c.eventDetails.venueName);
+    v('ed-venueAddress',     c.eventDetails.venueAddress);
+    v('ed-googleMapsUrl',    c.eventDetails.googleMapsUrl);
+    v('ed-wazeUrl',          c.eventDetails.wazeUrl);
+    v('ed-displayDate',      c.eventDetails.displayDate);
+    v('ed-displayDay',       c.eventDetails.displayDay);
+    v('ed-registrationTime', c.eventDetails.registrationTime);
+    v('ed-eventTime',        c.eventDetails.eventTime);
+    v('ed-endTimeNote',      c.eventDetails.endTimeNote);
+  }
+
+  // Venue Guide
+  if (c.venueGuide) {
+    v('vg-grabDropoff',   c.venueGuide.grabDropoff);
+    v('vg-arrivalText',   c.venueGuide.arrivalText);
+    v('vg-lobbyImage',    c.venueGuide.lobbyImage);
+    v('vg-lobbyCaption',  c.venueGuide.lobbyCaption);
+    renderParkingList(c.venueGuide.parking || []);
+  }
+
+  // What to Bring
+  renderBringList(c.whatToBring || []);
+
+  // Homework
+  renderHomeworkList(c.homework || []);
+
+  // Dress Code
+  if (c.dressCode) {
+    v('dc-icon', c.dressCode.icon);
+    v('dc-code', c.dressCode.code);
+    v('dc-note', c.dressCode.note);
+  }
+
+  // FAQ
+  renderFaqList(c.faq || []);
+
+  // Links & Footer
+  v('lf-contactUsUrl', c.contactUsUrl);
+  if (c.footer) {
+    v('lf-company',   c.footer.company);
+    v('lf-copyright', c.footer.copyright);
+  }
+}
+
+// ── Build Config from Form ──
+function buildConfig() {
+  const g = id => (document.getElementById(id) || {}).value || '';
+
+  return {
+    header: {
+      badge:           g('h-badge'),
+      eventName:       g('h-eventName'),
+      tagline:         g('h-tagline'),
+      heroDate:        g('h-heroDate'),
+      heroTime:        g('h-heroTime'),
+      heroLocation:    g('h-heroLocation'),
+      countdownTarget: g('h-countdownTarget'),
+    },
+    eventDetails: {
+      venueName:        g('ed-venueName'),
+      venueAddress:     g('ed-venueAddress'),
+      googleMapsUrl:    g('ed-googleMapsUrl'),
+      wazeUrl:          g('ed-wazeUrl'),
+      displayDate:      g('ed-displayDate'),
+      displayDay:       g('ed-displayDay'),
+      registrationTime: g('ed-registrationTime'),
+      eventTime:        g('ed-eventTime'),
+      endTimeNote:      g('ed-endTimeNote'),
+    },
+    venueGuide: {
+      grabDropoff:  g('vg-grabDropoff'),
+      parking:      collectParking(),
+      arrivalText:  g('vg-arrivalText'),
+      lobbyImage:   g('vg-lobbyImage'),
+      lobbyCaption: g('vg-lobbyCaption'),
+    },
+    whatToBring: collectBring(),
+    homework:    collectHomework(),
+    dressCode: {
+      icon: g('dc-icon'),
+      code: g('dc-code'),
+      note: g('dc-note'),
+    },
+    faq:          collectFaq(),
+    contactUsUrl: g('lf-contactUsUrl'),
+    footer: {
+      company:   g('lf-company'),
+      copyright: g('lf-copyright'),
+    },
+  };
+}
+
+// ── Parking ──
+let parkingCount = 0;
+
+function renderParkingList(arr) {
+  document.getElementById('parkingList').innerHTML = '';
+  parkingCount = 0;
+  arr.forEach(p => addParking(p));
+}
+
+function addParking(data) {
+  parkingCount++;
+  const idx = parkingCount;
+  const d = data || {};
+
+  const card = document.createElement('div');
+  card.className = 'pk-admin-card';
+  card.dataset.parkIdx = idx;
+
+  card.innerHTML = `
+    <div class="pk-admin-header">
+      <span class="pk-admin-label">Parking Option ${idx}</span>
+      <button class="btn btn-danger" onclick="this.closest('.pk-admin-card').remove()">✕ Remove</button>
+    </div>
+    <div class="pk-admin-body">
+      <div class="field-row">
+        <div class="field">
+          <label>Name</label>
+          <input type="text" class="pk-name" placeholder="Lalaport BBCC" value="${esc(d.name||'')}">
+        </div>
+        <div class="field">
+          <label>How to Park — Supports HTML</label>
+          <input type="text" class="pk-howToPark" placeholder="Park at &lt;strong&gt;Zone C&lt;/strong&gt;..." value="${esc(d.howToPark||'')}">
+          <span class="html-hint">Supports &lt;strong&gt;</span>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Parking image URL</label>
+          <input type="url" class="pk-image" placeholder="https://..." value="${esc(d.image||'')}">
+        </div>
+        <div class="field">
+          <label>Image caption</label>
+          <input type="text" class="pk-imageCaption" placeholder="Park at Zone C..." value="${esc(d.imageCaption||'')}">
+        </div>
+      </div>
+      <div class="field">
+        <label>Directory video URL</label>
+        <input type="url" class="pk-videoUrl" placeholder="https://drive.google.com/..." value="${esc(d.videoUrl||'')}">
+      </div>
+      <div class="field">
+        <label>Rates</label>
+        <div class="rates-list pk-rates"></div>
+        <button class="btn-add-rate" onclick="addRate(this.previousElementSibling)">＋ Add rate row</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('parkingList').appendChild(card);
+
+  const ratesList = card.querySelector('.pk-rates');
+  (d.rates || []).forEach(r => addRate(ratesList, r));
+}
+
+function addRate(ratesList, data) {
+  const d = data || {};
+  const row = document.createElement('div');
+  row.className = 'rate-row-admin';
+  row.innerHTML = `
+    <input type="text" class="r-label" placeholder="e.g. First 3 hours:" value="${esc(d.label||'')}">
+    <input type="text" class="r-value" placeholder="e.g. Free" value="${esc(d.value||'')}">
+    <button class="btn-rm-rate" onclick="this.closest('.rate-row-admin').remove()" title="Remove">✕</button>
+  `;
+  ratesList.appendChild(row);
+}
+
+function collectParking() {
+  return Array.from(document.querySelectorAll('.pk-admin-card')).map(card => ({
+    name:         card.querySelector('.pk-name').value,
+    howToPark:    card.querySelector('.pk-howToPark').value,
+    image:        card.querySelector('.pk-image').value,
+    imageCaption: card.querySelector('.pk-imageCaption').value,
+    videoUrl:     card.querySelector('.pk-videoUrl').value,
+    rates: Array.from(card.querySelectorAll('.rate-row-admin')).map(r => ({
+      label: r.querySelector('.r-label').value,
+      value: r.querySelector('.r-value').value,
+    })).filter(r => r.label || r.value),
+  }));
+}
+
+// ── What to Bring ──
+function renderBringList(arr) {
+  document.getElementById('bringList').innerHTML = '';
+  arr.forEach(item => addBring(item));
+}
+
+function addBring(data) {
+  const d = data || {};
+  const div = document.createElement('div');
+  div.className = 'dyn-item';
+  div.innerHTML = `
+    <div class="dyn-item-header">
+      <span class="dyn-item-label">Item</span>
+      <button class="btn btn-danger" onclick="this.closest('.dyn-item').remove()">✕ Remove</button>
+    </div>
+    <div class="field-row-3">
+      <div class="field">
+        <label>Icon (emoji)</label>
+        <input type="text" class="bi-icon" placeholder="💧" value="${esc(d.icon||'')}">
+      </div>
+      <div class="field">
+        <label>Item text</label>
+        <input type="text" class="bi-text" placeholder="Water Bottle with Lid" value="${esc(d.text||'')}">
+      </div>
+      <div class="field">
+        <label>Note (optional)</label>
+        <input type="text" class="bi-note" placeholder="(Optional: extra note)" value="${esc(d.note||'')}">
+      </div>
+    </div>
+  `;
+  document.getElementById('bringList').appendChild(div);
+}
+
+function collectBring() {
+  return Array.from(document.querySelectorAll('#bringList .dyn-item')).map(div => ({
+    icon: div.querySelector('.bi-icon').value,
+    text: div.querySelector('.bi-text').value,
+    note: div.querySelector('.bi-note').value,
+  })).filter(i => i.text);
+}
+
+// ── Homework ──
+function renderHomeworkList(arr) {
+  document.getElementById('homeworkList').innerHTML = '';
+  arr.forEach(item => addHomework(item));
+}
+
+function addHomework(data) {
+  const d = data || {};
+  const div = document.createElement('div');
+  div.className = 'dyn-item';
+  div.innerHTML = `
+    <div class="dyn-item-header">
+      <span class="dyn-item-label">Task</span>
+      <button class="btn btn-danger" onclick="this.closest('.dyn-item').remove()">✕ Remove</button>
+    </div>
+    <div class="field-row-3">
+      <div class="field">
+        <label>Icon (emoji)</label>
+        <input type="text" class="hw-icon" placeholder="📌" value="${esc(d.icon||'')}">
+      </div>
+      <div class="field">
+        <label>Task text — Supports HTML</label>
+        <input type="text" class="hw-text" placeholder="Read Chapter 3..." value="${esc(d.text||'')}">
+      </div>
+      <div class="field">
+        <label>Link URL (optional)</label>
+        <input type="url" class="hw-link" placeholder="https://..." value="${esc(d.link||'')}">
+      </div>
+    </div>
+  `;
+  document.getElementById('homeworkList').appendChild(div);
+}
+
+function collectHomework() {
+  return Array.from(document.querySelectorAll('#homeworkList .dyn-item')).map(div => ({
+    icon: div.querySelector('.hw-icon').value,
+    text: div.querySelector('.hw-text').value,
+    link: div.querySelector('.hw-link').value,
+  })).filter(i => i.text);
+}
+
+// ── FAQ ──
+function renderFaqList(arr) {
+  document.getElementById('faqList').innerHTML = '';
+  arr.forEach(item => addFaq(item));
+}
+
+function addFaq(data) {
+  const d = data || {};
+  const div = document.createElement('div');
+  div.className = 'dyn-item';
+  div.innerHTML = `
+    <div class="dyn-item-header">
+      <span class="dyn-item-label">FAQ Item</span>
+      <button class="btn btn-danger" onclick="this.closest('.dyn-item').remove()">✕ Remove</button>
+    </div>
+    <div class="field">
+      <label>Question</label>
+      <input type="text" class="faq-q" placeholder="Can I transfer my ticket?" value="${esc(d.q||'')}">
+    </div>
+    <div class="field">
+      <label>Answer — Supports HTML</label>
+      <textarea class="faq-a sm">${esc(d.a||'')}</textarea>
+      <span class="html-hint">Supports &lt;strong&gt;, &lt;em&gt;, &lt;br&gt;</span>
+    </div>
+  `;
+  document.getElementById('faqList').appendChild(div);
+}
+
+function collectFaq() {
+  return Array.from(document.querySelectorAll('#faqList .dyn-item')).map(div => ({
+    q: div.querySelector('.faq-q').value,
+    a: div.querySelector('.faq-a').value,
+  })).filter(i => i.q || i.a);
+}
+
+// ── Escape for HTML attribute values ──
+function esc(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+// ── Init ──
+loadSettings();
+
+// Try auto-load if settings exist
+(async () => {
+  const s = getSettings();
+  if (s.token && s.owner && s.repo) {
+    await loadFromGitHub();
+  } else {
+    // Pre-populate with default content from config.json if available
+    try {
+      const res = await fetch('./config.json');
+      if (res.ok) { populateForm(await res.json()); setStatus('Loaded local config.json', 'ok'); }
+    } catch (_) {}
+  }
+})();
+</script>
+</body>
+</html>
