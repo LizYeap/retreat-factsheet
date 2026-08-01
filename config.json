@@ -2,7 +2,7 @@
   "header": {
     "badge": "Event Factsheet",
     "eventName": "Founder Mastermind Retreat",
-    "tagline": "Step away from the business to reset how you think, decide, and lead.",
+    "tagline": "Step away from the business to reset how you think, decide, and lead.🔥",
     "heroDate": "3 – 4 Jul 2026 · Fri – Sat",
     "heroTime": "10AM – 6PM",
     "heroLocation": "Menara EcoWorld, KL",
@@ -15,7 +15,7 @@
     "wazeUrl": "https://ul.waze.com/ul?ll=3.13940800%2C101.70973100&navigate=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location",
     "displayDate": "3 – 4 July 2026",
     "displayDay": "Friday to Saturday",
-    "registrationTime": "9:30 AM",
+    "registrationTime": "9:45 AM",
     "eventTime": "10:00 AM – 6:00 PM",
     "endTimeNote": "End time may vary."
   },
@@ -27,25 +27,46 @@
         "howToPark": "Park at <strong>Zone C (Blue Zone)</strong>, Pillars <strong>C1 – C4</strong>",
         "image": "https://category-king-factsheet.vercel.app/Lalaport%20Parking%20Picture.jpeg",
         "imageCaption": "Park at Zone C (Blue Zone), pillars C1–C4",
+        "videoUrl": "https://drive.google.com/file/d/1qBIPrbqQzve_NeG4iKZavrkVCfLPh3DJ/view?usp=sharing",
         "rates": [
-          { "label": "First 3 hours:", "value": "Free" },
-          { "label": "Subsequent hour:", "value": "RM 3" },
-          { "label": "After 5:00 PM:", "value": "Free" },
-          { "label": "Max per day:", "value": "RM 30" }
-        ],
-        "videoUrl": "https://drive.google.com/file/d/1qBIPrbqQzve_NeG4iKZavrkVCfLPh3DJ/view?usp=sharing"
+          {
+            "label": "First 3 hours:",
+            "value": "Free"
+          },
+          {
+            "label": "Subsequent hour:",
+            "value": "RM 3"
+          },
+          {
+            "label": "After 5:00 PM:",
+            "value": "Free"
+          },
+          {
+            "label": "Max per day:",
+            "value": "RM 30"
+          }
+        ]
       },
       {
         "name": "The Labs @ BBCC",
         "howToPark": "Park at <strong>B3</strong>, near <strong>Lift A</strong>",
         "image": "",
         "imageCaption": "",
+        "videoUrl": "https://drive.google.com/file/d/1oMJFtL8d2HX7w0G1q9xJnEQnNaeUMid6/view?usp=sharing",
         "rates": [
-          { "label": "First hour:", "value": "RM 3" },
-          { "label": "Subsequent hour:", "value": "RM 2" },
-          { "label": "Max per day:", "value": "RM 40" }
-        ],
-        "videoUrl": "https://drive.google.com/file/d/1oMJFtL8d2HX7w0G1q9xJnEQnNaeUMid6/view?usp=sharing"
+          {
+            "label": "First hour:",
+            "value": "RM 3"
+          },
+          {
+            "label": "Subsequent hour:",
+            "value": "RM 2"
+          },
+          {
+            "label": "Max per day:",
+            "value": "RM 40"
+          }
+        ]
       }
     ],
     "arrivalText": "Head to the reception counter to register. Mention to the security guards that you are going up to <strong>Level 39, Unit 07</strong>.",
@@ -53,10 +74,26 @@
     "lobbyCaption": "Head to the reception counter upon arrival"
   },
   "whatToBring": [
-    { "icon": "💧", "text": "Water Bottle with Lid", "note": "" },
-    { "icon": "📓", "text": "Notebook with Pen", "note": "" },
-    { "icon": "🔋", "text": "Power Bank or Charger", "note": "" },
-    { "icon": "🧥", "text": "Jacket", "note": "(Highly recommended! The room will be cold.)" }
+    {
+      "icon": "💧",
+      "text": "Water Bottle with Lid",
+      "note": ""
+    },
+    {
+      "icon": "📓",
+      "text": "Notebook with Pen",
+      "note": ""
+    },
+    {
+      "icon": "🔋",
+      "text": "Power Bank or Charger",
+      "note": ""
+    },
+    {
+      "icon": "🧥",
+      "text": "Jacket",
+      "note": "(Highly recommended! The room will be cold.)"
+    }
   ],
   "homework": [],
   "dressCode": {
